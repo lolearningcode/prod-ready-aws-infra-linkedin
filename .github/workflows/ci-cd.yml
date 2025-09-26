@@ -1,0 +1,65 @@
+name: Build & Secure Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-oidc-role
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # --- Build App ---
+      - name: Build, Tag, and Push Image
+        run: |
+          IMAGE_URI=${{ steps.ecr-login.outputs.registry }}/prod-ready-app:${{ github.sha }}
+          docker build -t $IMAGE_URI ./app
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
+      # --- Security Scans ---
+      - name: Run Trivy Image Scan
+        uses: aquasecurity/trivy-action@0.16.0
+        with:
+          image-ref: ${{ env.IMAGE_URI }}
+          severity: CRITICAL,HIGH
+          exit-code: 1 # fail pipeline if critical vulns found
+
+      - name: Run tfsec on Terraform
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          working_directory: ./envs/dev
+          additional_args: --minimum-severity=HIGH
+
+      # --- Push Only If Secure ---
+      - name: Push Image (if secure)
+        if: success()
+        run: docker push ${{ env.IMAGE_URI }}
+
+      # --- Terraform Deploy ---
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform -chdir=envs/dev init
+
+      - name: Terraform Apply
+        if: success()
+        run: terraform -chdir=envs/dev apply -auto-approve -input=false \
+          -var="app_image=${{ env.IMAGE_URI }}"
