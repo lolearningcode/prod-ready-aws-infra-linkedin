@@ -36,3 +36,7 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform -chdir=envs/dev apply -auto-approve -input=false
+
+      - name: Show Terraform Outputs
+        if: github.ref == 'refs/heads/main'
+        run: terraform -chdir=envs/dev output -json
