@@ -22,3 +22,38 @@ It’s designed to be simple enough for learning, but structured the way real te
 ---
 
 ## 📂 Repo Structure
+
+```
+.
+├── app/                     # Node.js app source (Dockerized)
+│   ├── Dockerfile
+│   ├── package.json
+│   └── server.js
+├── diagrams/                # Architecture diagrams
+├── envs/                    # Environment configs (dev, prod)
+│   ├── dev/
+│   │   └── main.tf
+│   └── prod/
+│       └── main.tf
+├── modules/                 # Terraform modules
+│   ├── alb/
+│   ├── ecs/
+│   ├── iam/
+│   ├── monitoring/
+│   ├── security-groups/
+│   └── vpc/
+├── .github/workflows/       # CI/CD pipelines (Terraform + ECS deploy)
+│   ├── ci-cd.yml
+│   └── terraform.yml
+├── .gitignore
+├── LICENSE
+├── README.md
+```
+
+---
+
+## ⚙️ CI/CD
+
+This project uses GitHub Actions for automation:
+- **terraform.yml**: Runs Terraform init/plan/apply with OIDC authentication to AWS.
+- **ci-cd.yml**: Builds and pushes the app Docker image to ECR, then triggers ECS service update.
