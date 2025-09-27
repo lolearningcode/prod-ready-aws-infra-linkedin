@@ -54,14 +54,9 @@ jobs:
         if: success()
         run: docker push ${{ env.IMAGE_URI }}
 
-      # --- Deploy New Image ---
-      - name: Terraform Deploy App
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform Init
-        run: terraform -chdir=envs/dev init
-
+      # --- Terraform Apply with New Container Image ---
       - name: Terraform Apply
-        if: success()
-        run: terraform -chdir=envs/dev apply -auto-approve -input=false \
-          -var="app_image=${{ env.IMAGE_URI }}"
+        run: terraform apply -auto-approve -var="container_image=${{ env.IMAGE_URI }}"
+        working-directory: ./envs/dev
+        env:
+          AWS_REGION: us-east-1
