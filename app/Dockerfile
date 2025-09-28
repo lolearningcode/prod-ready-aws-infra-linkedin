@@ -4,9 +4,9 @@ WORKDIR /app
 RUN apk update && apk upgrade --no-cache
 COPY package*.json ./
 RUN if [ -f package-lock.json ]; then \
-      npm ci --only=production; \
+      npm ci --only=production --no-audit --progress=false; \
     else \
-      npm install --production; \
+      npm install --production --no-audit --progress=false; \
     fi
 COPY . .
 
