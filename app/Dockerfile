@@ -3,11 +3,8 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 RUN apk update && apk upgrade --no-cache
 COPY package*.json ./
-RUN if [ -f package-lock.json ]; then \
-      npm ci --only=production --no-audit --progress=false; \
-    else \
-      npm install --production --no-audit --progress=false; \
-    fi
+RUN rm -rf node_modules package-lock.json && \
+    npm install --omit=dev --no-audit --progress=false
 COPY . .
 
 # Stage 2: Run (Alpine)
