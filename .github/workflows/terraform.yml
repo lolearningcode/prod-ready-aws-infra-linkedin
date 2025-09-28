@@ -31,11 +31,21 @@ jobs:
         run: terraform -chdir=envs/dev init
 
       - name: Terraform Plan
-        run: terraform -chdir=envs/dev plan -input=false
+        run: |
+          terraform -chdir=envs/dev plan -input=false \
+            -var='create_oidc_provider=false' \
+            -var='existing_oidc_provider_arn=arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:oidc-provider/token.actions.githubusercontent.com' \
+            -var='create_sns_topic=false' \
+            -var='manage_log_retention=false'
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform -chdir=envs/dev apply -auto-approve -input=false
+        run: |
+          terraform -chdir=envs/dev apply -auto-approve -input=false \
+            -var='create_oidc_provider=false' \
+            -var='existing_oidc_provider_arn=arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:oidc-provider/token.actions.githubusercontent.com' \
+            -var='create_sns_topic=false' \
+            -var='manage_log_retention=false'
 
       - name: Show Terraform Outputs
         if: github.ref == 'refs/heads/main'
