@@ -17,3 +17,21 @@ variable "vpc_id" {
   description = "VPC ID"
   type        = string
 }
+
+variable "certificate_arn" {
+  description = "(Optional) ARN of the TLS certificate to attach to the HTTPS listener. If empty, no certificate will be attached."
+  type        = string
+  default     = ""
+}
+
+variable "enable_https" {
+  description = "Whether to create an HTTPS listener and redirect HTTP to HTTPS"
+  type        = bool
+  default     = true
+}
+
+variable "ssl_policy" {
+  description = "Optional SSL policy for the HTTPS listener, for example 'ELBSecurityPolicy-2016-08'"
+  type        = string
+  default     = null
+}
