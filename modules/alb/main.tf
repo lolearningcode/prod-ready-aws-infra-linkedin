@@ -3,6 +3,7 @@ resource "aws_lb" "app" {
   load_balancer_type = "application"
   subnets            = var.public_subnets
   security_groups    = [var.alb_sg_id]
+  drop_invalid_header_fields = true
 }
 
 resource "aws_lb_target_group" "app" {
