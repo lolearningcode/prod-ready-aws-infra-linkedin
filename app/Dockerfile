@@ -6,9 +6,8 @@ COPY package*.json ./
 RUN if [ -f package-lock.json ]; then \
       npm ci --only=production; \
     else \
-      npm install --omit=dev; \
-    fi \
-    && npm audit fix --force
+      npm install --production; \
+    fi
 COPY . .
 
 # Stage 2: Run (Alpine)
