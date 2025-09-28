@@ -14,3 +14,15 @@ variable "alarm_email" {
   type        = string
   default     = ""
 }
+
+variable "create_sns_topic" {
+  description = "Whether the module should create an SNS topic when alarm_email is provided"
+  type        = bool
+  default     = true
+}
+
+variable "manage_log_retention" {
+  description = "Whether to set CloudWatch Logs retention via Terraform (true by default)"
+  type        = bool
+  default     = true
+}
