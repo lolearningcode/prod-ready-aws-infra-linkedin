@@ -48,13 +48,17 @@ module "ecs" {
 }
 
 module "iam" {
-  source      = "../../modules/iam"
-  name        = "dev"
-  github_repo = "lolearningcode/prod-ready-aws-infra"
+  source                     = "../../modules/iam"
+  name                       = "dev"
+  github_repo                = "lolearningcode/prod-ready-aws-infra"
+  create_oidc_provider       = false
+  existing_oidc_provider_arn = "arn:aws:iam::269599744150:oidc-provider/token.actions.githubusercontent.com"
 }
 
 module "monitoring" {
-  source      = "../../modules/monitoring"
-  name        = "dev"
-  alarm_email = "cleointhecloud.1@gmail.com"
+  source               = "../../modules/monitoring"
+  name                 = "dev"
+  alarm_email          = "cleointhecloud.1@gmail.com"
+  create_sns_topic     = false
+  manage_log_retention = false
 }
