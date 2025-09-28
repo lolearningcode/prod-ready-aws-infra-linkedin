@@ -1,15 +1,21 @@
 # Stage 1: Build
 FROM node:18-alpine AS builder
 WORKDIR /app
-RUN apk update && apk upgrade --no-cache
+
+# Install deps
 COPY package*.json ./
-RUN rm -rf node_modules package-lock.json && \
-    npm install --omit=dev --no-audit --progress=false
+RUN if [ -f package-lock.json ]; then \
+      npm ci --only=production --no-audit --progress=false; \
+    else \
+      npm install --production --no-audit --progress=false; \
+    fi \
+    && npm install cross-spawn@7.0.5 --no-save
+
+# Copy source
 COPY . .
 
-# Stage 2: Run (Alpine)
-FROM node:18-alpine
+# Stage 2: Run
+FROM node:18-alpine AS stage-1
 WORKDIR /app
-COPY --from=builder /app /app
-EXPOSE 80
+COPY --from=builder /app .
 CMD ["node", "server.js"]
