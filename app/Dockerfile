@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:18-alpine:latest AS builder
+FROM node:18-alpine AS builder
 WORKDIR /app
 RUN apk update && apk upgrade --no-cache
 COPY package*.json ./
@@ -11,7 +11,7 @@ RUN if [ -f package-lock.json ]; then \
 COPY . .
 
 # Stage 2: Run (Distroless)
-FROM gcr.io/distroless/nodejs18:latest
+FROM gcr.io/distroless/nodejs18
 WORKDIR /app
 COPY --from=builder /app /app
 EXPOSE 80
