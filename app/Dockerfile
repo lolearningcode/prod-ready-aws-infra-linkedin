@@ -2,7 +2,11 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --only=production
+RUN if [ -f package-lock.json ]; then \
+      npm ci --only=production; \
+    else \
+      npm install --omit=dev; \
+    fi
 COPY . .
 
 # Stage 2: Run (Distroless)
