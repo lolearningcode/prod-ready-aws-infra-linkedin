@@ -2,14 +2,14 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Install deps
+# Upgrade npm inside container to match your local (>=10.9.0)
+RUN npm install -g npm@10.9.2
+
+# Copy dependency manifests first (for caching)
 COPY package*.json ./
-RUN if [ -f package-lock.json ]; then \
-      npm ci --only=production --no-audit --progress=false; \
-    else \
-      npm install --production --no-audit --progress=false; \
-    fi \
-    && npm install cross-spawn@7.0.5 --no-save
+
+# Install deps with overrides support
+RUN npm install --omit=dev --no-audit --progress=false
 
 # Copy source
 COPY . .
