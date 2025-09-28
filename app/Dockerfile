@@ -7,7 +7,8 @@ RUN if [ -f package-lock.json ]; then \
       npm ci --only=production; \
     else \
       npm install --omit=dev; \
-    fi
+    fi \
+    && npm audit fix --force
 COPY . .
 
 # Stage 2: Run (Alpine)
@@ -15,4 +16,4 @@ FROM node:18-alpine
 WORKDIR /app
 COPY --from=builder /app /app
 EXPOSE 80
-CMD ["server.js"]
+CMD ["node", "server.js"]
