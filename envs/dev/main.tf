@@ -28,6 +28,9 @@ module "security_groups" {
   source = "../../modules/security-groups"
   env    = "dev"
   vpc_id = module.vpc.vpc_id
+  # For development, keep ALB closed by default. Provide your office or VPN CIDRs
+  # to allow access (example below). Avoid using 0.0.0.0/0 in production.
+  alb_ingress_cidr_blocks = []
 }
 
 module "alb" {

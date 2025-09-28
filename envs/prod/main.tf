@@ -22,6 +22,9 @@ module "security_groups" {
   source = "../../modules/security-groups"
   env    = "prod"
   vpc_id = module.vpc.vpc_id
+  # IMPORTANT: set this to your allowed client CIDRs (office, VPN). Do NOT set to ["0.0.0.0/0"] unless you explicitly require public access.
+  # Example: alb_ingress_cidr_blocks = ["203.0.113.0/24"]
+  alb_ingress_cidr_blocks = []
 }
 
 module "alb" {
