@@ -10,8 +10,8 @@ RUN if [ -f package-lock.json ]; then \
     fi
 COPY . .
 
-# Stage 2: Run (Distroless)
-FROM gcr.io/distroless/nodejs18
+# Stage 2: Run (Alpine)
+FROM node:18-alpine
 WORKDIR /app
 COPY --from=builder /app /app
 EXPOSE 80
