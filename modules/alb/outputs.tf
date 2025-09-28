@@ -7,7 +7,7 @@ output "alb_dns_name" {
 }
 
 output "alb_listener_arn" {
-  value = aws_lb_listener.http.arn
+  value = length(aws_lb_listener.http_redirect) > 0 ? aws_lb_listener.http_redirect[0].arn : aws_lb_listener.http_forward[0].arn
 }
 
 output "target_group_arn" {
