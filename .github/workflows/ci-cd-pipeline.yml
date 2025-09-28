@@ -32,7 +32,7 @@ jobs:
       - name: Build, Tag, and Push Image
         run: |
           IMAGE_URI=${{ steps.ecr-login.outputs.registry }}/prod-ready-app:${{ github.sha }}
-          docker build -t $IMAGE_URI ./app
+          docker build -t $IMAGE_URI .
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
       # --- Security Scans ---
