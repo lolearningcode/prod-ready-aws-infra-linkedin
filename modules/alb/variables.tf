@@ -35,3 +35,9 @@ variable "ssl_policy" {
   type        = string
   default     = null
 }
+
+variable "allow_http" {
+  description = "Whether plain HTTP (port 80) should be allowed to forward to targets. Defaults to false to encourage HTTPS."
+  type        = bool
+  default     = false
+}

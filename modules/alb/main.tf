@@ -37,7 +37,7 @@ resource "aws_lb_listener" "http_redirect" {
 }
 
 resource "aws_lb_listener" "http_forward" {
-  count             = var.enable_https && var.certificate_arn != "" ? 0 : 1
+  count             = (var.enable_https && var.certificate_arn != "") || !var.allow_http ? 0 : 1
   load_balancer_arn = aws_lb.app.arn
   port              = 80
   protocol          = "HTTP"
