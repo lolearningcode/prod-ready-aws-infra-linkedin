@@ -5,9 +5,9 @@ variable "alb_ingress_cidr_blocks" {
 }
 
 variable "egress_cidr_blocks" {
-  description = "List of CIDR blocks for egress rules. By default allows all outbound traffic."
+  description = "List of CIDR blocks for egress rules. When empty (default) egress is restricted to the VPC CIDR. Provide explicit public CIDRs only if you intentionally require broader outbound access."
   type        = list(string)
-  default     = ["0.0.0.0/0"]
+  default     = []
 }
 variable "env" {
   description = "Environment name (dev/prod)"

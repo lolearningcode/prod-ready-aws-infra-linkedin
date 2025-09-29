@@ -27,7 +27,7 @@ resource "aws_security_group" "alb" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = var.egress_cidr_blocks
+    cidr_blocks = local.effective_egress_cidrs
   }
 }
 
@@ -47,6 +47,16 @@ resource "aws_security_group" "ecs" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = var.egress_cidr_blocks
+    cidr_blocks = local.effective_egress_cidrs
   }
+}
+
+data "aws_vpc" "selected" {
+  id = var.vpc_id
+}
+
+locals {
+  # If the caller supplies explicit egress CIDRs use them, otherwise
+  # restrict egress to the VPC CIDR by default (safer than 0.0.0.0/0).
+  effective_egress_cidrs = length(var.egress_cidr_blocks) > 0 ? var.egress_cidr_blocks : [data.aws_vpc.selected.cidr_block]
 }
