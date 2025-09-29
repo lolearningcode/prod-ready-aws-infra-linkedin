@@ -7,7 +7,17 @@ output "alb_dns_name" {
 }
 
 output "alb_listener_arn" {
-  value = length(aws_lb_listener.https) > 0 ? aws_lb_listener.https[0].arn : (length(aws_lb_listener.http_redirect) > 0 ? aws_lb_listener.http_redirect[0].arn : aws_lb_listener.http_forward[0].arn)
+  value = (
+    length(concat(
+      aws_lb_listener.https[*].arn,
+      aws_lb_listener.http_redirect[*].arn,
+      aws_lb_listener.http_forward[*].arn
+    )) > 0
+  ) ? concat(
+    aws_lb_listener.https[*].arn,
+    aws_lb_listener.http_redirect[*].arn,
+    aws_lb_listener.http_forward[*].arn
+  )[0] : ""
 }
 
 output "target_group_arn" {
