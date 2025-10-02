@@ -26,3 +26,15 @@ variable "create_nat_gateway" {
   type        = bool
   default     = false
 }
+
+variable "vpce_security_group_id" {
+  description = "Optional existing security group id to attach to interface VPC endpoints (e.g. ECR). If empty, the module will create one when endpoints are enabled."
+  type        = string
+  default     = ""
+}
+
+variable "vpce_allowed_source_security_group_ids" {
+  description = "Optional list of security group ids which should be allowed to reach the interface VPC endpoints (source SGs). When provided the module will create SG rules allowing those SGs to talk to the endpoints on 443. This only applies when the module creates the vpce SG (i.e. vpce_security_group_id is empty)."
+  type        = list(string)
+  default     = []
+}

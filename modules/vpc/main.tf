@@ -86,7 +86,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
   service_name       = "com.amazonaws.${data.aws_region.current.id}.ecr.api"
   vpc_endpoint_type  = "Interface"
   subnet_ids         = aws_subnet.private[*].id
-  security_group_ids = []
+  security_group_ids = var.vpce_security_group_id != "" ? [var.vpce_security_group_id] : [aws_security_group.vpce[0].id]
 }
 
 resource "aws_vpc_endpoint" "ecr_dkr" {
@@ -95,7 +95,46 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   service_name       = "com.amazonaws.${data.aws_region.current.id}.ecr.dkr"
   vpc_endpoint_type  = "Interface"
   subnet_ids         = aws_subnet.private[*].id
-  security_group_ids = []
+  security_group_ids = var.vpce_security_group_id != "" ? [var.vpce_security_group_id] : [aws_security_group.vpce[0].id]
+}
+
+resource "aws_security_group" "vpce" {
+  count       = var.create_endpoints && var.vpce_security_group_id == "" ? 1 : 0
+  name        = "${var.name}-vpce-sg"
+  description = "Security group for VPC interface endpoints (ECR)"
+  vpc_id      = aws_vpc.main.id
+
+  # Allow ECS tasks (in VPC) to reach endpoints on 443
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.main.cidr_block]
+  }
+
+  # Allow all outbound from the endpoint SG
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = { Name = "${var.name}-vpce-sg" }
+}
+
+/* When we create the VPCE SG, optionally create SG-to-SG ingress rules allowing
+   the provided source security groups to reach port 443 on the endpoint SG. */
+resource "aws_security_group_rule" "vpce_allow_from_sgs" {
+  count = var.create_endpoints && var.vpce_security_group_id == "" ? length(var.vpce_allowed_source_security_group_ids) : 0
+
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.vpce[0].id
+  source_security_group_id = var.vpce_allowed_source_security_group_ids[count.index]
+  description              = "Allow source SG to reach VPCE on 443"
 }
 
 data "aws_region" "current" {}
