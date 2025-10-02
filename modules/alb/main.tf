@@ -40,10 +40,8 @@ resource "aws_lb_listener" "http_redirect" {
   }
 }
 
+// tfsec:ignore:aws-elb-http-not-used HTTP listener is intentionally created when no TLS certificate is provided or when `allow_http` is enabled for development/demo convenience. Production should enable HTTPS with a certificate.
 resource "aws_lb_listener" "http_forward" {
-  /*
-  tfsec:ignore:aws-elb-http-not-used HTTP listener is intentionally created when no TLS certificate is provided or when `allow_http` is enabled for development/demo convenience. Production should enable HTTPS with a certificate.
-  */
   count             = (var.enable_https && var.certificate_arn != "") && !var.allow_http ? 0 : 1
   load_balancer_arn = aws_lb.app.arn
   port              = 80
