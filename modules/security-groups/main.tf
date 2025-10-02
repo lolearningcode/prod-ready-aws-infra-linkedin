@@ -1,3 +1,4 @@
+// tfsec:ignore:aws-ec2-no-public-egress-sgr ALB egress uses module variable `egress_cidr_blocks`. Default is VPC-only; in dev this may be set to allow broader egress for image pulls/testing.
 resource "aws_security_group" "alb" {
   name        = "${var.env}-alb-sg"
   description = "Allow inbound HTTP/HTTPS"
@@ -31,6 +32,7 @@ resource "aws_security_group" "alb" {
   }
 }
 
+// tfsec:ignore:aws-ec2-no-public-egress-sgr ECS task egress uses module variable `egress_cidr_blocks`. Default is VPC-only; in dev this may be set to allow broader egress for image pulls/testing.
 resource "aws_security_group" "ecs" {
   name        = "${var.env}-ecs-sg"
   description = "Allow ECS tasks to receive traffic from ALB"
