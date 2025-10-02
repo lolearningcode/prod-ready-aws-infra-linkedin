@@ -13,7 +13,7 @@ resource "aws_ecs_task_definition" "app" {
   container_definitions = jsonencode([
     {
       name         = "app"
-      image        = "${var.container_image}"
+      image        = var.container_image
       portMappings = [{ containerPort = 80, hostPort = 80 }]
       logConfiguration = {
         logDriver = "awslogs"

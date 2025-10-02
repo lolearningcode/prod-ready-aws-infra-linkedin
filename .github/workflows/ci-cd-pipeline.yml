@@ -47,7 +47,11 @@ jobs:
           IMAGE_URI=${{ steps.ecr-login.outputs.registry }}/prod-ready-aws-infra-linkedin:${{ github.sha }}
           docker build -t $IMAGE_URI .
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+          echo "Built image: $IMAGE_URI"
 
+      - name: Show IMAGE_URI for TF
+        run: echo "IMAGE_URI=${{ env.IMAGE_URI }}"
+        
       # --- Security Scans ---
       - name: Run Trivy Image Scan
         uses: aquasecurity/trivy-action@0.16.0

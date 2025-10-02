@@ -6,10 +6,10 @@ terraform {
     }
   }
   backend "s3" {
-    bucket       = "269599744150-terraform-state-dev"
-    key          = "dev/terraform.tfstate"
-    region       = "us-east-1"
-    encrypt      = true
+    bucket  = "269599744150-terraform-state-dev"
+    key     = "dev/terraform.tfstate"
+    region  = "us-east-1"
+    encrypt = true
   }
 }
 
@@ -30,6 +30,7 @@ module "security_groups" {
   # For development, keep ALB closed by default. Provide your office or VPN CIDRs
   # to allow access (example below). Avoid using 0.0.0.0/0 in production.
   alb_ingress_cidr_blocks = []
+  egress_cidr_blocks      = ["0.0.0.0/0"]
 }
 
 module "alb" {
