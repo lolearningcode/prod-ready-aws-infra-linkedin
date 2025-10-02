@@ -118,9 +118,10 @@ resource "aws_security_group" "vpce" {
   # ingress to the VPC or to specific source SGs; outbound must allow 443 to
   # reach the AWS managed endpoint interfaces.
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    # tfsec:ignore:aws-ec2-no-public-egress-sgr -- Allow HTTPS egress to AWS-managed interface endpoints
     cidr_blocks = ["0.0.0.0/0"]
   }
 
