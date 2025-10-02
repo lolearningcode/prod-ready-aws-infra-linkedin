@@ -1,6 +1,7 @@
-/*
-tfsec:ignore:aws-elb-alb-not-public This ALB is intentionally public to expose the sample Python app deployed to ECS. Access is restricted via security groups and HTTPS where enabled.
-*/
+/* tfsec:ignore:aws-elb-alb-not-public This ALB is intentionally public to expose the sample Python app deployed to ECS. Access is restricted via security groups and HTTPS where enabled. */
+# tfsec:ignore:aws-elb-alb-not-public This ALB is intentionally public to expose the sample Python app deployed to ECS. Access is restricted via security groups and HTTPS where enabled.
+// tfsec:ignore:aws-elb-alb-not-public This ALB is intentionally public to expose the sample Python app deployed to ECS. Access is restricted via security groups and HTTPS where enabled.
+/* End of tfsec ignore comments */
 resource "aws_lb" "app" {
   name                       = "${var.name}-alb"
   load_balancer_type         = "application"
@@ -40,6 +41,9 @@ resource "aws_lb_listener" "http_redirect" {
 }
 
 resource "aws_lb_listener" "http_forward" {
+  /*
+  tfsec:ignore:aws-elb-http-not-used HTTP listener is intentionally created when no TLS certificate is provided or when `allow_http` is enabled for development/demo convenience. Production should enable HTTPS with a certificate.
+  */
   count             = (var.enable_https && var.certificate_arn != "") && !var.allow_http ? 0 : 1
   load_balancer_arn = aws_lb.app.arn
   port              = 80
