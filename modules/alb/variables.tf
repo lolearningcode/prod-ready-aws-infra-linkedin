@@ -41,3 +41,9 @@ variable "allow_http" {
   type        = bool
   default     = false
 }
+
+variable "allow_public_alb" {
+  description = "Whether the ALB should be publicly accessible. Defaults to false (ALB is internal). Set to true to allow public ALB for demo/testing."
+  type        = bool
+  default     = false
+}

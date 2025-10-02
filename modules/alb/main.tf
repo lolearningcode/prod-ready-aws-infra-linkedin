@@ -6,6 +6,7 @@ resource "aws_lb" "app" {
   name                       = "${var.name}-alb"
   load_balancer_type         = "application"
   subnets                    = var.public_subnets
+  internal                   = var.allow_public_alb ? false : true
   security_groups            = [var.alb_sg_id]
   drop_invalid_header_fields = true
 }
