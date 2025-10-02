@@ -1,9 +1,3 @@
-variable "container_image" {
-  description = "Container image URI supplied by CI (overridden with -var=container_image=...)"
-  type        = string
-  default     = ""
-}
-
 variable "create_oidc_provider" {
   description = "Whether to create the GitHub OIDC provider in this account (root-level passthrough)"
   type        = bool
@@ -26,4 +20,9 @@ variable "manage_log_retention" {
   description = "Whether the monitoring module should manage log group retention (root-level passthrough)"
   type        = bool
   default     = false
+}
+
+variable "app_image" {
+  description = "Container image URI supplied by CI (overridden with -var=app_image=...)"
+  type        = string
 }

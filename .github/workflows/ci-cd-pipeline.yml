@@ -1,14 +1,15 @@
-name: Build & Secure Deploy
+name: Unified CI/CD Pipeline
 
 on:
-  workflow_run:
-    workflows: ["Terraform CI/CD"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -66,7 +67,7 @@ jobs:
         if: success()
         run: docker push ${{ env.IMAGE_URI }}
 
-      # --- Terraform Apply with New Container Image ---
+      # --- Terraform Setup ---
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -75,7 +76,17 @@ jobs:
       - name: Terraform Init
         run: terraform -chdir=./envs/dev init -input=false -reconfigure
 
+      - name: Terraform Plan
+        run: |
+          terraform -chdir=./envs/dev plan \
+            -var="app_image=${{ env.IMAGE_URI }}" \
+            -var='create_oidc_provider=false' \
+            -var='existing_oidc_provider_arn=arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:oidc-provider/token.actions.githubusercontent.com' \
+            -var='create_sns_topic=false' \
+            -var='manage_log_retention=false'
+
       - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           terraform -chdir=./envs/dev apply -auto-approve \
             -var="app_image=${{ env.IMAGE_URI }}" \

@@ -17,11 +17,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-variable "app_image" {
-  description = "Container image URI supplied by CI (overridden with -var=app_image=...)"
-  type        = string
-}
-
 module "vpc" {
   source = "../../modules/vpc"
   name   = "dev"
