@@ -18,8 +18,10 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "../../modules/vpc"
-  name   = "dev"
+  source             = "../../modules/vpc"
+  name               = "dev"
+  create_nat_gateway = true
+  create_endpoints   = true
 }
 
 

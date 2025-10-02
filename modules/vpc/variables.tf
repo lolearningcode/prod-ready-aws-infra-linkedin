@@ -14,3 +14,15 @@ variable "map_public_ip_on_launch" {
   type        = bool
   default     = false
 }
+
+variable "create_endpoints" {
+  description = "Whether to create VPC endpoints for S3 and ECR so private resources can access them without internet egress"
+  type        = bool
+  default     = false
+}
+
+variable "create_nat_gateway" {
+  description = "Whether to create a NAT gateway to allow private subnets outbound internet access"
+  type        = bool
+  default     = false
+}
