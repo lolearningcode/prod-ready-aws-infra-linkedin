@@ -13,7 +13,7 @@ output "alb_listener_arn" {
       aws_lb_listener.http_redirect[*].arn,
       aws_lb_listener.http_forward[*].arn
     )) > 0
-  ) ? concat(
+    ) ? concat(
     aws_lb_listener.https[*].arn,
     aws_lb_listener.http_redirect[*].arn,
     aws_lb_listener.http_forward[*].arn
