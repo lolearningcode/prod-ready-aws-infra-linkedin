@@ -28,10 +28,22 @@ jobs:
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Ensure ECR repository exists
+        run: |
+          REPO=${{ steps.ecr-login.outputs.registry }}/prod-ready-aws-infra-linkedin
+          REPO_NAME=${REPO#*/}
+          echo "Checking ECR repository: $REPO_NAME"
+          if ! aws ecr describe-repositories --repository-names "$REPO_NAME" >/dev/null 2>&1; then
+            echo "Repository $REPO_NAME not found, creating..."
+            aws ecr create-repository --repository-name "$REPO_NAME" || true
+          else
+            echo "Repository $REPO_NAME already exists"
+          fi
+
       # --- Build App ---
       - name: Build, Tag, and Push Image
         run: |
-          IMAGE_URI=${{ steps.ecr-login.outputs.registry }}/prod-ready-app:${{ github.sha }}
+          IMAGE_URI=${{ steps.ecr-login.outputs.registry }}/prod-ready-aws-infra-linkedin:${{ github.sha }}
           docker build -t $IMAGE_URI .
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
