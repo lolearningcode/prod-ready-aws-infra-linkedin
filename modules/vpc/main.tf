@@ -113,6 +113,10 @@ resource "aws_security_group" "vpce" {
   }
 
   # Allow all outbound from the endpoint SG
+  # tfsec:ignore:aws-ec2-no-public-egress-sgr -- This SG is attached to ECR interface
+  # endpoints which require outbound HTTPS to Amazon ECR service IPs. We restrict
+  # ingress to the VPC or to specific source SGs; outbound must allow 443 to
+  # reach the AWS managed endpoint interfaces.
   egress {
     from_port   = 0
     to_port     = 0
