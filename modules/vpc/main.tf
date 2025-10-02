@@ -75,7 +75,7 @@ resource "aws_route_table_association" "private" {
 resource "aws_vpc_endpoint" "s3" {
   count             = var.create_endpoints ? 1 : 0
   vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.s3"
+  service_name      = "com.amazonaws.${data.aws_region.current.id}.s3"
   route_table_ids   = [aws_route_table.public.id]
   vpc_endpoint_type = "Gateway"
 }
@@ -83,7 +83,7 @@ resource "aws_vpc_endpoint" "s3" {
 resource "aws_vpc_endpoint" "ecr_api" {
   count              = var.create_endpoints ? 1 : 0
   vpc_id             = aws_vpc.main.id
-  service_name       = "com.amazonaws.${data.aws_region.current.name}.ecr.api"
+  service_name       = "com.amazonaws.${data.aws_region.current.id}.ecr.api"
   vpc_endpoint_type  = "Interface"
   subnet_ids         = aws_subnet.private[*].id
   security_group_ids = []
@@ -92,7 +92,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
 resource "aws_vpc_endpoint" "ecr_dkr" {
   count              = var.create_endpoints ? 1 : 0
   vpc_id             = aws_vpc.main.id
-  service_name       = "com.amazonaws.${data.aws_region.current.name}.ecr.dkr"
+  service_name       = "com.amazonaws.${data.aws_region.current.id}.ecr.dkr"
   vpc_endpoint_type  = "Interface"
   subnet_ids         = aws_subnet.private[*].id
   security_group_ids = []
