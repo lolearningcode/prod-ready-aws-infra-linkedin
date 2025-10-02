@@ -72,6 +72,9 @@ jobs:
         with:
           terraform_version: 1.6.0
 
+      - name: Terraform Init
+        run: terraform -chdir=./envs/dev init -input=false -reconfigure
+
       - name: Terraform Apply
         run: |
           terraform -chdir=./envs/dev apply -auto-approve \
