@@ -1,4 +1,10 @@
 terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
   backend "s3" {
     bucket       = "269599744150-terraform-state-dev"
     key          = "dev/terraform.tfstate"
@@ -14,7 +20,6 @@ provider "aws" {
 variable "app_image" {
   description = "Container image URI supplied by CI (overridden with -var=app_image=...)"
   type        = string
-  default     = ""
 }
 
 module "vpc" {
@@ -46,7 +51,7 @@ module "ecs" {
   private_subnets  = module.vpc.private_subnets
   app_sg_id        = module.security_groups.ecs_sg_id
   target_group_arn = module.alb.target_group_arn
-  container_image  = var.app_image != "" ? var.app_image : "nginx:latest"
+  container_image  = var.app_image
 }
 
 module "iam" {

@@ -19,7 +19,6 @@ variable "target_group_arn" {
 }
 
 variable "container_image" {
-  description = "Container image URI for the app (default uses nginx:latest)"
+  description = "Container image URI for the app (must be provided, typically from ECR)"
   type        = string
-  default     = "nginx:latest"
 }
