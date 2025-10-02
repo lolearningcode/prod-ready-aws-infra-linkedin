@@ -14,6 +14,7 @@ resource "aws_cloudwatch_log_group" "ecs_no_retention" {
 resource "aws_sns_topic" "alerts" {
   count = var.create_sns_topic && var.alarm_sns_topic == "" && var.alarm_email != "" ? 1 : 0
   name  = "${var.name}-alerts"
+  kms_master_key_id = "alias/aws/sns" 
 }
 
 resource "aws_sns_topic_subscription" "email" {
