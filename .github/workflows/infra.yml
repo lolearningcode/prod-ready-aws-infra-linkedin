@@ -33,6 +33,7 @@ jobs:
       - name: Terraform Plan
         run: |
           terraform -chdir=envs/dev plan -input=false \
+            -var='app_image=${{ env.IMAGE_URI }}' \
             -var='create_oidc_provider=false' \
             -var='existing_oidc_provider_arn=arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:oidc-provider/token.actions.githubusercontent.com' \
             -var='create_sns_topic=false' \
@@ -42,6 +43,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           terraform -chdir=envs/dev apply -auto-approve -input=false \
+            -var='app_image=${{ env.IMAGE_URI }}' \
             -var='create_oidc_provider=false' \
             -var='existing_oidc_provider_arn=arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:oidc-provider/token.actions.githubusercontent.com' \
             -var='create_sns_topic=false' \

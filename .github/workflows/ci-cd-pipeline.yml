@@ -78,7 +78,7 @@ jobs:
       - name: Terraform Apply
         run: |
           terraform -chdir=./envs/dev apply -auto-approve \
-            -var="container_image=${{ env.IMAGE_URI }}" \
+            -var="app_image=${{ env.IMAGE_URI }}" \
             -var='create_oidc_provider=false' \
             -var='existing_oidc_provider_arn=arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:oidc-provider/token.actions.githubusercontent.com' \
             -var='create_sns_topic=false' \
