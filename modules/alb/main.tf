@@ -2,6 +2,7 @@
 # tfsec:ignore:aws-elb-alb-not-public This ALB is intentionally public to expose the sample Python app deployed to ECS. Access is restricted via security groups and HTTPS where enabled.
 // tfsec:ignore:aws-elb-alb-not-public This ALB is intentionally public to expose the sample Python app deployed to ECS. Access is restricted via security groups and HTTPS where enabled.
 /* End of tfsec ignore comments */
+ # tfsec:ignore:aws-elb-alb-not-public This ALB is intentionally public to expose the ECS app. Access restricted via SGs and HTTPS in production.
 resource "aws_lb" "app" {
   name                       = "${var.name}-alb"
   load_balancer_type         = "application"
