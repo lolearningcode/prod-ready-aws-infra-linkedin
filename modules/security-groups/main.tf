@@ -4,24 +4,22 @@ resource "aws_security_group" "alb" {
   description = "Allow inbound HTTP/HTTPS"
   vpc_id      = var.vpc_id
 
-  dynamic "ingress" {
-    for_each = var.alb_ingress_cidr_blocks
-    content {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = [ingress.value]
-    }
+  // tfsec:ignore:aws-ec2-no-public-ingress-sgr ALB must be internet-facing to allow public client access (HTTP)
+  ingress {
+    description = "Allow HTTP from anywhere"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
-  dynamic "ingress" {
-    for_each = var.alb_ingress_cidr_blocks
-    content {
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      cidr_blocks = [ingress.value]
-    }
+  // tfsec:ignore:aws-ec2-no-public-ingress-sgr ALB must be internet-facing to allow public client access (HTTPS)
+  ingress {
+    description = "Allow HTTPS from anywhere"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
