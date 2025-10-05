@@ -41,6 +41,7 @@ module "ecs" {
   private_subnets  = module.vpc.private_subnets
   app_sg_id        = module.security_groups.ecs_sg_id
   target_group_arn = module.alb.target_group_arn
+  container_image  = var.app_image
 }
 
 module "iam" {
